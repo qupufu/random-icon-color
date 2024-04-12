@@ -166,35 +166,32 @@ class $modify(PlayLayer) {
         randomize(UnlockType::ShipFire);
 
         auto gameManager = GameManager::sharedState();
-        switch (gameManager->m_playerIconType) {
-        case IconType::Cube:
+        if (PlayLayer::m_player1->m_isShip)
+        { 
+            if (PlayLayer::m_player1->m_isPlatformer)
+                PlayLayer::m_player1->updatePlayerJetpackFrame(gameManager->getPlayerJetpack());
+            else
+                PlayLayer::m_player1->updatePlayerShipFrame(gameManager->getPlayerShip());
+
             PlayLayer::m_player1->updatePlayerFrame(gameManager->getPlayerFrame());
-            break;
-        case IconType::Ship:
-            PlayLayer::m_player1->updatePlayerShipFrame(gameManager->getPlayerShip());
-            break;
-        case IconType::Ball:
-            PlayLayer::m_player1->updatePlayerRollFrame(gameManager->getPlayerBall());
-            break;
-        case IconType::Ufo:
-            PlayLayer::m_player1->updatePlayerBirdFrame(gameManager->getPlayerBird());
-            break;
-        case IconType::Wave:
-            PlayLayer::m_player1->updatePlayerDartFrame(gameManager->getPlayerDart());
-            break;
-        case IconType::Robot:
-            PlayLayer::m_player1->updatePlayerRobotFrame(gameManager->getPlayerRobot());
-            break;
-        case IconType::Spider:
-            PlayLayer::m_player1->updatePlayerSpiderFrame(gameManager->getPlayerSpider());
-            break;
-        case IconType::Swing:
-            PlayLayer::m_player1->updatePlayerSwingFrame(gameManager->getPlayerSwing());
-            break;
-        case IconType::Jetpack:
-            PlayLayer::m_player1->updatePlayerJetpackFrame(gameManager->getPlayerJetpack());
-            break;
         }
+        else if (PlayLayer::m_player1->m_isBall)
+            PlayLayer::m_player1->updatePlayerRollFrame(gameManager->getPlayerBall());
+        else if (PlayLayer::m_player1->m_isBird)
+        {
+            PlayLayer::m_player1->updatePlayerBirdFrame(gameManager->getPlayerBird());
+            PlayLayer::m_player1->updatePlayerFrame(gameManager->getPlayerFrame());
+        }
+        else if (PlayLayer::m_player1->m_isDart)
+            PlayLayer::m_player1->updatePlayerDartFrame(gameManager->getPlayerDart());
+        else if (PlayLayer::m_player1->m_isRobot)
+            PlayLayer::m_player1->updatePlayerRobotFrame(gameManager->getPlayerRobot());
+        else if (PlayLayer::m_player1->m_isSpider)
+            PlayLayer::m_player1->updatePlayerSpiderFrame(gameManager->getPlayerSpider());
+        else if (PlayLayer::m_player1->m_isSwing)
+            PlayLayer::m_player1->updatePlayerSwingFrame(gameManager->getPlayerSwing());
+        else
+            PlayLayer::m_player1->updatePlayerFrame(gameManager->getPlayerFrame());
 
         PlayLayer::m_player1->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
         PlayLayer::m_player1->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
