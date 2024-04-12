@@ -1,3 +1,4 @@
-# Template Mod
+# Randomize Icon on Death
 
-Edit about.md to change this
+Everytime you die or restart a level, it randomizes your icons and colors. Only chooses ones you have unlocked.
+For people that really can't decide what to use.
