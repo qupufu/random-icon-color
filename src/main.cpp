@@ -144,6 +144,42 @@ void randomize(UnlockType unlockType) {
     }
 }
 
+void updateFramesAndColors(PlayerObject *player)
+{
+    auto gameManager = GameManager::sharedState();
+    if (player->m_isShip)
+    {
+        if (player->m_isPlatformer)
+            player->updatePlayerJetpackFrame(gameManager->getPlayerJetpack());
+        else
+            player->updatePlayerShipFrame(gameManager->getPlayerShip());
+
+        player->updatePlayerFrame(gameManager->getPlayerFrame());
+    }
+    else if (player->m_isBall)
+        player->updatePlayerRollFrame(gameManager->getPlayerBall());
+    else if (player->m_isBird)
+    {
+        player->updatePlayerBirdFrame(gameManager->getPlayerBird());
+        player->updatePlayerFrame(gameManager->getPlayerFrame());
+    }
+    else if (player->m_isDart)
+        player->updatePlayerDartFrame(gameManager->getPlayerDart());
+    else if (player->m_isRobot)
+        player->updatePlayerRobotFrame(gameManager->getPlayerRobot());
+    else if (player->m_isSpider)
+        player->updatePlayerSpiderFrame(gameManager->getPlayerSpider());
+    else if (player->m_isSwing)
+        player->updatePlayerSwingFrame(gameManager->getPlayerSwing());
+    else
+        player->updatePlayerFrame(gameManager->getPlayerFrame());
+
+    player->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
+    player->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
+    if (gameManager->getPlayerGlow())
+        player->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
+}
+
 class $modify(PlayLayer) {
 
 	void resetLevel() {
@@ -165,37 +201,8 @@ class $modify(PlayLayer) {
         randomize(UnlockType::Jetpack);
         randomize(UnlockType::ShipFire);
 
-        auto gameManager = GameManager::sharedState();
-        if (PlayLayer::m_player1->m_isShip)
-        { 
-            if (PlayLayer::m_player1->m_isPlatformer)
-                PlayLayer::m_player1->updatePlayerJetpackFrame(gameManager->getPlayerJetpack());
-            else
-                PlayLayer::m_player1->updatePlayerShipFrame(gameManager->getPlayerShip());
-
-            PlayLayer::m_player1->updatePlayerFrame(gameManager->getPlayerFrame());
-        }
-        else if (PlayLayer::m_player1->m_isBall)
-            PlayLayer::m_player1->updatePlayerRollFrame(gameManager->getPlayerBall());
-        else if (PlayLayer::m_player1->m_isBird)
-        {
-            PlayLayer::m_player1->updatePlayerBirdFrame(gameManager->getPlayerBird());
-            PlayLayer::m_player1->updatePlayerFrame(gameManager->getPlayerFrame());
-        }
-        else if (PlayLayer::m_player1->m_isDart)
-            PlayLayer::m_player1->updatePlayerDartFrame(gameManager->getPlayerDart());
-        else if (PlayLayer::m_player1->m_isRobot)
-            PlayLayer::m_player1->updatePlayerRobotFrame(gameManager->getPlayerRobot());
-        else if (PlayLayer::m_player1->m_isSpider)
-            PlayLayer::m_player1->updatePlayerSpiderFrame(gameManager->getPlayerSpider());
-        else if (PlayLayer::m_player1->m_isSwing)
-            PlayLayer::m_player1->updatePlayerSwingFrame(gameManager->getPlayerSwing());
-        else
-            PlayLayer::m_player1->updatePlayerFrame(gameManager->getPlayerFrame());
-
-        PlayLayer::m_player1->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
-        PlayLayer::m_player1->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
-        if (gameManager->getPlayerGlow())
-            PlayLayer::m_player1->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
+        updateFramesAndColors(PlayLayer::m_player1);
+        if (PlayLayer::m_player2)
+            updateFramesAndColors(PlayLayer::m_player2);
     }
 };
