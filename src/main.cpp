@@ -1,5 +1,5 @@
 #include <Geode/Geode.hpp>
-#include <Geode/modify/PlayLayer.hpp>
+#include <Geode/modify/PlayerObject.hpp>
 #include <random>
 
 inline static std::vector<std::vector<int>> unlocked = {};
@@ -144,7 +144,7 @@ void randomize(UnlockType unlockType) {
     }
 }
 
-void updateFramesAndColors(PlayerObject *player)
+void updateFrames(PlayerObject *player)
 {
     auto gameManager = GameManager::sharedState();
     if (player->m_isShip)
@@ -174,35 +174,47 @@ void updateFramesAndColors(PlayerObject *player)
     else
         player->updatePlayerFrame(gameManager->getPlayerFrame());
 
-    player->setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
-    player->setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
     if (gameManager->getPlayerGlow())
         player->enableCustomGlowColor(gameManager->colorForIdx(gameManager->getPlayerGlowColor()));
 }
 
-class $modify(PlayLayer) {
+class $modify(PlayerObject) {
 
-	void resetLevel() {
-        PlayLayer::resetLevel();
-		setupUnlocked();
+    void resetObject() {
+        PlayerObject::resetObject();
+        if (!PlayLayer::get()) return;
 
-        randomize(UnlockType::Cube);
-        randomize(UnlockType::Col1);
-        randomize(UnlockType::Col2);
-        randomize(UnlockType::Ship);
-        randomize(UnlockType::Ball);
-        randomize(UnlockType::Bird);
-        randomize(UnlockType::Dart);
-        randomize(UnlockType::Robot);
-        randomize(UnlockType::Spider);
-        randomize(UnlockType::Streak);
-        randomize(UnlockType::Death);
-        randomize(UnlockType::Swing);
-        randomize(UnlockType::Jetpack);
-        randomize(UnlockType::ShipFire);
+        auto gameManager = GameManager::sharedState();
 
-        updateFramesAndColors(PlayLayer::m_player1);
-        if (PlayLayer::m_player2)
-            updateFramesAndColors(PlayLayer::m_player2);
+        if (m_gameLayer->m_player1 == this)
+        {
+            setupUnlocked();
+
+            randomize(UnlockType::Cube);
+            randomize(UnlockType::Col1);
+            randomize(UnlockType::Col2);
+            randomize(UnlockType::Ship);
+            randomize(UnlockType::Ball);
+            randomize(UnlockType::Bird);
+            randomize(UnlockType::Dart);
+            randomize(UnlockType::Robot);
+            randomize(UnlockType::Spider);
+            randomize(UnlockType::Streak);
+            randomize(UnlockType::Death);
+            randomize(UnlockType::Swing);
+            randomize(UnlockType::Jetpack);
+            randomize(UnlockType::ShipFire);
+
+            updateFrames(m_gameLayer->m_player1);
+            PlayerObject::setColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
+            PlayerObject::setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
+        }
+
+        if (m_gameLayer->m_player2 == this)
+        {
+            updateFrames(m_gameLayer->m_player2);
+            PlayerObject::setColor(gameManager->colorForIdx(gameManager->getPlayerColor2()));
+            PlayerObject::setSecondColor(gameManager->colorForIdx(gameManager->getPlayerColor()));
+        }
     }
 };
